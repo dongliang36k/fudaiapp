@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>奖品详情</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+            background-color: #f5f5f5;
+          }
+          .top{
+               padding: 20.75rem .85rem 0 .85rem;
+               background:#fff;
+               margin-bottom: .43rem;
+          }
+          .bot{
+            background-color: #fff;
+            padding: 0 .85rem;
+          }
+          .priname{
+            font-size: .75rem;
+            line-height: 1.07rem;
+            color: #333;
+            margin-bottom: .43rem;
+            width: 18.13rem;
+            position: relative;
+          }
+          .price{
+            float: left;
+            font-size: 1.07rem;
+            line-height: 1.07rem;
+            color: #333;
+          }
+          .price span{
+            display: inline-block;
+            font-size: .69rem;
+            line-height: .69rem;
+          }
+          .history{
+            float:right;
+            font-size:.75rem;
+            line-height:1.07rem;
+            color:#DD4848;
+          }
+          .congra{
+            width:100%;
+            margin:1.28rem 0 1.07rem 0;
+            padding:.85rem .53rem;
+            box-sizing:border-box;
+            background: #F9EAEA;
+            border: 1px solid #F2CACA;
+            border-radius: .21rem;
+          }
+          .congra .myava{
+            float:left;
+            width:2.88rem;
+            height:2.88rem;
+            border: .11rem solid #fff;
+            border-radius: 100%;
+            display: inline-block;
+            margin-right: .8rem;
+          }
+          .congra .myluck {
+            font-size:.69rem;
+            float:left;
+            color:#333;
+            padding-top: .43rem;
+          }
+          .myluck div{
+            line-height: .96rem;
+            width: 8.53rem;
+            overflow: hidden;
+            white-space: nowrap;
+          	text-overflow: ellipsis;
+            margin-bottom: .32rem;
+          }
+          .congra .xuan{
+            color: #fff;
+            margin-top:.53rem;
+            float:right;
+            line-height:1.92rem;
+            font-size:.75rem;
+            width:3.89rem;
+            text-align: center;
+            background-color:#DD4848;
+            border-radius: .21rem;
+          }
+          .time{width: 100%;color: #ababab;background:#fff;line-height: 2.24rem;font-size: .64rem;}
+          .navbar{
+            height:2.67rem;
+            background:#fff;
+            border-bottom:1px solid #eee;
+            font-size:.75rem;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+          }
+        .option{
+          line-height:2.67rem;
+          width: 4.59rem;
+          text-align: center;
+          position: relative;
+          color: #999;
+         }
+         .checked{color: #DD4848;}
+         .checked::after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: .11rem;
+            bottom: .21rem;
+            background: #DD4848;
+          }
+          .good-title .priname{
+            width: 13.71rem;
+            float: left;
+            font-size:.75rem;
+            font-weight:normal;
+            color:#333;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            line-height:1.07rem;
+          }
+          .good-title{
+            margin-bottom: .64rem;
+          }
+          .good-title .good-share{
+            float: right;
+            font-size: .64rem;
+            color: #999;
+            text-align: center;
+            line-height: .91rem;
+          }
+          .good-share img{
+            display: inline-block;
+            width: .75rem;
+            height: auto;
+          }
+          .gui{
+            width: 100%;
+            background: #fff;
+            padding: .85rem 0;
+          }
+          .gui .tit{
+            color: #333;
+            font-size: .75rem;
+            line-height: 1.07rem;
+            margin-bottom: .32rem;
+          }
+          .gui .con{
+            color: #999;
+            font-size: .64rem;
+            line-height: .96rem;
+            margin-bottom: .64rem;
+          }
+          .none{
+            display: none !important;
+          }
+          .gui .prod{color: #333;font-size: .75rem;line-height: 1.28rem;}
+          .chou{
+            background: #DD4848;
+            width: 48%;
+            line-height: 2.24rem;
+            font-size: .75rem;
+            color: #fff;
+            box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.50);
+            border-radius: .21rem;
+            text-align: center;
+          }
+          .xian{
+            background: #F97947;
+            width: 48%;
+            line-height: 2.24rem;
+            font-size: .75rem;
+            color: #fff;
+            box-shadow: 0 .16rem .27rem 0 #EC9777;
+            border-radius: .21rem;
+            text-align: center;
+          }
+          .choujiang{
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin: 1.28rem 0 1.07rem 0;
+          }
+          .myze{width: 100%;box-sizing: border-box;background: #f1f1f1;font-size: .69rem;color: #999;padding: .32rem .8rem;border-radius: .21rem;}
+          .myze .left{float: left;line-height: 1.6rem;}
+          .myze .right{float: right;line-height: 1.6rem;}
+          .myze .mypri{line-height: .96rem;color: #DD4848;font-size: .69rem}
+          .mypri span{margin-right: .8rem;}
+          .draw{width: 100%;line-height: 2.39rem;font-size: 1.06rem;margin: .56rem auto;background-color: #f66707;color: #fff;text-align: center;border-radius: 2.78rem;}
+          .zhong{
+            background: #DD4848;
+            width: 100%;
+            line-height: 2.24rem;
+            font-size: .75rem;
+            color: #fff;
+            box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.50);
+            border-radius: .21rem;
+            text-align: center;
+            margin: 1.28rem 0 1.07rem 0;
+          }
+          .gui .img{display: block;width:100%;height: auto;margin: .56rem 0;}
+      </style>
+  </head>
+  <body>
+      <div class="top">
+       <div class="good-title clearfix">
+         <div class="priname ellipsis" id='title'></div>
+         <div class="good-share" onclick="goShare()">
+           <img src="../../img/share@3x.png" alt="">
+           <div>分享得奖券</div>
+         </div>
+       </div>
+       <div class="title clearfix">
+           <div class="price">
+             ￥49元
+           </div>
+           <div class="history" onclick="goHistory()">
+             最新开奖揭晓
+           </div>
+       </div>
+       <div class="congra clearfix none">
+
+       </div>
+       <div class="choujiang none">
+         <div class="chou" onclick="moneyPrize()">现金抽奖</div>
+         <div class="xian" onclick="freePrize()">免费抽奖</div>
+       </div>
+       <div class="zhong none" onclick="goBuy()">
+         付一元领奖
+       </div>
+       <div class="myze">
+       </div>
+       <div class="time">
+         开奖时间: 2018-08-06 22:31:54
+       </div>
+     </div>
+     <div class="navbar">
+       <div class="option checked" onclick="changeTab(1)">
+         抽奖规则
+       </div>
+       <div class="option" onclick="changeTab(2)">
+         奖品介绍
+       </div>
+     </div>
+     <div class="bot">
+       <div class='gui'>
+         <div class='tit'>1.自己抽奖</div>
+         <div class='con'>每个用户初始有一次免费抽奖机会，之后可以使用1斤福袋兑换一次抽奖机会，福袋可以通过抢福袋免费获得。</div>
+         <div class='tit'>2.分享抽奖</div>
+         <div class='con'>分享抽奖,朋友点击能让你更多获取福袋，兑换更多奖券，中奖概率更高。</div>
+         <div class='tit'>3.开奖</div>
+         <div class='con'>抽奖券全部发完则立即开奖;</div>
+         <div class='con'>抽奖券未发完，则到开奖时间开奖</div>
+         <div class='tit'>4.领奖</div>
+         <div class='con'>为验证身份，中奖者请在开奖后48小时内支付1元并添加收货地址，逾期作废。</div>
+         <div class='tit'>5.发货</div>
+         <div class='con'>商家奖使用顺丰到付的方式邮寄抽奖商品</div>
+         <div class='tit'>6.收货</div>
+         <div class='con'>抽奖商品不包邮，邮费顺丰到付。</div>
+         <div class='con'>请中奖者核对无问题后，再确认收货。</div>
+      </div>
+      <div id='detail' class="gui none">
+          <img class="img" src="http://ozrczu0r3.bkt.clouddn.com/FlG1B7rZnkv-UxVWq4LKpIgbtKwU" alt="">
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+  let luckTime=0;
+  apiready = function(){
+     getInfo(api.pageParam.id);
+  };
+  function goHistory() {
+    api.openWin({
+        name: 'history',
+        url: './history.html',
+        bounces:false
+    });
+
+  }
+  function getInfo(id){
+    fnPost('https://www.hnchimay.com/hcCmmodity/getcommodityinfo',{values:{commodityId:id,uid:$api.getStorage('userInfo').id}},true,function(res,err){
+      if(res.success){
+        const data = res.body.data;
+        luckTime=res.body.user.luckTime;
+        getUI(data.bannerImg,data.name);
+        var jia = '';
+        res.body.num.map((item)=>{
+          jia+='<span>'+item.num+'</span>';
+        })
+        var html='<div class="clearfix">'+
+                  '<div class="left">我获得 '+res.body.num.length+' 张抽奖券</div>'+
+                  '<div class="right">总抽奖券 '+data.surplusCoupon+'/'+data.allCoupon+' 张</div></div>'+
+                '<div class="mypri">'+jia+'</div>';
+        $api.html($api.dom('.myze'), html);
+        $api.text($api.dom('.priname'),data.name);
+        $api.html($api.dom('.price'), '<span>￥</span>'+data.price);
+        var img = '';
+        JSON.parse(data.imgDetail).map((item)=>{
+          img+='<img class="img" src="'+item+'" alt="">';
+        })
+        var detail = '<div class="prod">'+data.note+'</div>'+img;
+        $api.html($api.byId('detail'), detail);
+
+        var chou = $api.dom('.choujiang');
+        var zhong = $api.dom('.zhong');
+        var congra = $api.dom('.congra');
+        var myh= '<img class="myava" src="'+data.avatarUrl+'" /><div class="myluck"><div>中奖者: '+data.nickName+'</div><div>幸运号: '+data.luckNum+'</div></div><div class="xuan">中奖炫耀</div>';
+        $api.html(congra, myh);
+        if(data.isOpen==2){
+          $api.removeCls(chou, 'none');
+        }
+        if(data.isOpen==1){
+          $api.removeCls(congra, 'none');
+        }
+        if(data.isOpen==1 && res.body.iswin==1){
+          $api.removeCls(zhong, 'none');
+        }
+      }else{
+        getUI([],'');
+      }
+    })
+  }
+  function getUI(img,name){
+    var UIScrollPicture = api.require('UIScrollPicture');
+    UIScrollPicture.open({
+      rect : {
+        x : 0,
+        y : 0,
+        w : api.winWidth,
+        h : 360
+      },
+      data : {
+        paths :JSON.parse(img),
+      },
+      styles : {
+        indicator: {
+           dot:{
+             w:10,
+             h:10,
+             r:5,
+             margin:9,
+          },
+            align: 'center',
+            color: '#E4E4E4',
+            activeColor: '#dd4848'
+        }
+      },
+      contentMode : 'scaleToFill',
+      fixedOn:'priframe',
+      interval : 3,
+      loop : true,
+      fixed : false
+    }, function(ret, err) {
+      if (ret) {
+        console.log(JSON.stringify(ret));
+      } else {
+        console.log(JSON.stringify(err));
+      }
+    });
+  }
+  function changeTab(index){
+    var nav = $api.domAll('.option');
+    var list  = $api.domAll('.gui');
+    if(index==1){
+      $api.addCls(nav[0], 'checked');
+      $api.removeCls(nav[1], 'checked');
+      $api.addCls(list[1], 'none');
+      $api.removeCls(list[0], 'none');
+    }else {
+      $api.addCls(nav[1], 'checked');
+      $api.removeCls(nav[0], 'checked');
+      $api.addCls(list[0], 'none');
+      $api.removeCls(list[1], 'none');
+    }
+  }
+  function freePrize() {
+    if(luckTime>0){
+       fnPost(
+         'https://www.hnchimay.com/hcCmmodity/luckdraw',
+         {values:{
+           commodityId:api.pageParam.id,
+           num:1,
+           uid:$api.getStorage('userInfo').id,
+           useLuck:1,
+           pid:'',
+         }},
+         true,
+         function(res,err){
+           if(res.success){
+             getInfo(api.pageParam.id);
+           }
+         }
+       )
+    }else {
+      api.toast({
+          msg: '免费抽奖机会已用完，去分享得更多机会吧!',
+          duration: 2000,
+          location: 'bottom'
+      });
+
+    }
+  }
+  function moneyPrize(){
+    var dialogBox = api.require('dialogBox');
+    dialogBox.amount({
+        texts: {
+            title: '兑换数量(0.5元一张)',
+            default: '1',
+            leftBtnTitle: '取消',
+            rightBtnTitle: '兑换'
+        },
+        styles: {
+            bg: '#fff',
+            corner: 0.5,
+            w: 250,
+            h: 200,
+            title: {
+                marginT: 20,
+                size: 16,
+                color: '#000'
+            },
+            input: {
+                w: 150,
+                h: 44,
+                marginT: 25,
+                size: 14,
+                color: '#000'
+            },
+            dividingLine: {
+                marginT: 10,
+                width: 0,
+                color: '#696969'
+            },
+            left: {
+                marginL: 20,
+                w: 80,
+                h: 40,
+                bg: '#efefef',
+                color: '#666',
+                size: 14
+            },
+            right: {
+                marginR: 20,
+                w: 80,
+                h: 40,
+                bg: '#0d8ee9',
+                color: '#fff',
+                size: 14
+            }
+        }
+    }, function(ret) {
+       if (ret.eventType == 'right') {
+          fnPost(
+            'https://www.hnchimay.com/hcCmmodity/luckdraw',
+            {values:{
+              commodityId:api.pageParam.id,
+              num:ret.amount,
+              uid:$api.getStorage('userInfo').id,
+              useLuck:2,
+              pid:'',
+            }},
+            true,
+            function(res,err){
+              if(res.success){
+                getInfo(api.pageParam.id);
+                api.toast({
+                    msg: '恭喜您，抽奖成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+
+              }
+            }
+          )
+        }
+        var dialogBox = api.require('dialogBox');
+        dialogBox.close({
+            dialogName: 'amount'
+        });
+    });
+
+  }
+  function goBuy(){
+    api.openWin({
+        name: 'buy',
+        url: './buy.html',
+        pageParam: {
+            id:api.pageParam.id,
+        },
+        bounces:false,
+    });
+  }
+  function goShare(){
+    var wx = api.require('wx');
+    wx.shareProgram({
+        apiKey: 'wxed02780e15c94996',
+        scene: 'session',
+        title: '我在福袋来袭免费抽奖，您也来抽吧！',
+        description: '我在福袋来袭免费抽奖，您也来抽吧！',
+        thumb: 'widget://img/goshare.png',
+        webpageUrl: 'https://mp.weixin.qq.com/s/I8foy8fFIQ0I1qFrv7ElEg',
+        userName: 'gh_5e8a7112f89f',
+        path: `pages/prize/prize?pid=${$api.getStorage('userInfo').id}&id=${api.pageParam.id}`,
+    }, function(ret, err) {
+        if (ret.status) {
+            api.toast({
+                msg: '分享成功',
+                duration: 2000,
+                location: 'bottom'
+            });
+        } else {
+          api.toast({
+              msg: '分享失败',
+              duration: 2000,
+              location: 'bottom'
+          });
+        }
+    });
+  }
+  </script>
+  </html>

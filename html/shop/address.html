@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>修改收货地址</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+            background-color: #f5f5f5;
+          }
+          ul{
+            padding-left: .83rem;
+            margin-top: .43rem;
+            background: #ffffff;
+          }
+          li{
+            border-bottom: 1px solid #eee;
+            background-color:#fff;
+          }
+          li div{
+            float: left;
+            font-size: .83rem;
+            color: #333;
+            line-height: 2.5rem;
+            width: 20%;
+          }
+          li .right{
+            width: 80%;
+            position: relative;
+          }
+          input{
+            display: inline-block;
+            line-height: 1.11rem;
+            color: #333;
+            width: 15rem;
+          }
+          li span{
+            width: 13.89rem;
+            display: inline-block;
+          }
+          li i{
+            position: absolute;
+            right: .28rem;
+            color: #666;
+          }
+          textarea{
+            position: relative;
+            top: .72rem;
+            resize:none;
+            left: 0;
+            line-height: 1.11rem;
+            width: 15rem;
+            display: inline-block;
+          }
+          .btn{
+            position: absolute;
+            bottom: 1.81rem;
+            background-color: #DD4848;
+            box-shadow: 0 3px 5px 0 rgba(211,56,56,0.59);
+            border-radius: .21rem;
+            width: 18.29rem;
+            height: 2.4rem;
+            line-height: 2.4rem;
+            color: #fff;
+            text-align: center;
+            font-size: .8rem;
+            margin-left: .85rem;
+          }
+      </style>
+  </head>
+  <body>
+      <ul class="my">
+        <li class="clearfix">
+          <div class="left">
+            姓名
+          </div>
+          <div class="right">
+            <input id="name" type="text" name="" value="" maxlength="16">
+          </div>
+        </li>
+        <li class="clearfix">
+          <div class="left">
+            联系方式
+          </div>
+          <div>
+            <input id='tel' type="number" name="" value="" maxlength="11">
+          </div>
+        </li>
+        <li class="clearfix">
+          <div class="left">
+            所在地区
+          </div>
+          <div class="right" onclick="select()">
+            <span id="area"></span>
+            <i class="iconfont icon-arrow-right"></i>
+          </div>
+        </li>
+        <li class="clearfix">
+          <div class="left">
+            详细地址
+          </div>
+          <div class="right">
+            <textarea id='add' rows="3" maxlength="66" placeholder="如: 街道、小区、乡镇、村"></textarea>
+          </div>
+        </li>
+      </ul>
+      <div class="btn" onclick="saveAddress()">
+        保存
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        getAddress();
+      };
+      function select(){
+        var UIActionSelector = api.require('UIActionSelector');
+        UIActionSelector.open({
+            datas: 'widget://res/city.json',
+            layout: {
+                row: 5,
+                col: 3,
+                height: 36,
+                size: 16,
+                sizeActive: 14,
+                rowSpacing: 5,
+                colSpacing: 0,
+                maskBg: 'rgba(0,0,0,0.2)',
+                bg: '#fff',
+                color: '#999',
+                colorActive: '#333',
+                colorSelected: '#333'
+            },
+            animation: true,
+            cancel: {
+                text: '取消',
+                size: 14,
+                w: 60,
+                h: 35,
+                bg: '#f5f5f5',
+                bgActive: '#f5f5f5',
+                color: '#999',
+                colorActive: '#999'
+            },
+            ok: {
+                text: '确定',
+                size: 14,
+                w: 60,
+                h: 35,
+                bg: '#f5f5f5',
+                bgActive: '#f5f5f5',
+                color: '#dd4848',
+                colorActive: '#dd4848'
+            },
+            title: {
+                text: '请选择区域',
+                size: 14,
+                h: 44,
+                bg: '#f5f5f5',
+                color: '#333'
+            },
+            lineColor: '#efefef',
+            fixedOn: api.frameName
+        }, function(ret, err) {
+            if (ret) {
+                console.log(JSON.stringify(ret));
+                if(ret.eventType=='ok'){
+                  $api.text($api.byId('area'), `${ret.level1} ${ret.level2} ${ret.level3}`);
+                }
+            } else {
+                console.log(JSON.stringify(err));
+            }
+        });
+      }
+      function saveAddress() {
+        var name=$api.val($api.byId('name'));
+        var tel=$api.val($api.byId('tel'));
+        var add=$api.val($api.byId('add'));
+        var area=$api.text($api.byId('area'));
+        if(name=='' || tel=='' || add=='' || area==''){
+          api.toast({
+              msg: '请确认填写完整',
+              duration: 2000,
+              location: 'middle'
+          });
+        }else {
+          $api.setStorage('address',{name,tel,add,area});
+          api.execScript({
+              name: 'buy',
+              frameName: 'sureOrder',
+              script: 'getAddress();'
+          });
+
+          api.closeWin({
+              name: 'address'
+          });
+        }
+      }
+      function getAddress() {
+        var address=$api.getStorage('address');
+        if(address){
+          var name=$api.val($api.byId('name'),address.name);
+          var tel=$api.val($api.byId('tel'),address.tel);
+          var add=$api.val($api.byId('add'),address.add);
+          var area=$api.text($api.byId('area'),address.area);
+        }
+      }
+      function goBack(){
+        api.historyBack({
+        },function(ret,err){
+            if(!ret.status){
+                api.closeWin();
+            }
+        });
+      }
+  </script>
+  </html>

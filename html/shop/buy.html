@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          header {
+              display: block;
+              text-align: center;
+              background-color: #FFF;
+              color: #333;
+              font-size: 1rem;
+              height: 2.78rem;
+              line-height: 2.78rem;
+              position: relative;
+          }
+          .buy{
+            position:fixed;
+            bottom:0;
+            left:0;
+            width:100%;
+            display:-webkit-box;
+            display:-ms-flexbox;
+            display:flex;
+            height:2.78rem;
+            -webkit-box-orient:horizontal;
+            -webkit-box-direction:normal;
+            flex-direction:row;
+            background:#FFF;
+            z-index:20;
+            justify-content: flex-start;
+          }
+          .buy .price{
+            flex: none;
+            text-align: right;
+            font-size: .69rem;
+            color: #333;
+            margin-right: 1.07rem;
+            width: 50%;
+            line-height: 2.78rem;
+          }
+          #price{
+            font-size: .96rem;
+            display: inline-block;
+            color: #DD4848;
+            line-height: 2.78rem;
+          }
+          .buy .submit{
+            flex: auto;
+            background-color: #DD4848;
+            font-size: .91rem;
+            text-align: center;
+            line-height: 2.78rem;
+            color: #fff;
+          }
+          .head i{
+            display:inline-block;
+            position: absolute;
+            font-size: .96rem;
+            left: .8rem;
+          }
+      </style>
+  </head>
+  <body>
+      <header class="head">
+        <i class="iconfont icon-back" onclick="goBack()"></i>
+        确认订单
+      </header>
+      <div class="buy">
+         <div class="price">
+           实付款：<span id='price'>￥</span>
+         </div>
+         <div class="submit" onclick="goPay()">
+           提交订单
+         </div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        $api.fixTabBar($api.dom('.buy'));
+        api.openFrame({
+            name: 'sureOrder',
+            url: './order.html',
+            bounces:false,
+            pageParam:{
+              id:api.pageParam.id,
+            },
+            rect: {
+                x: 0,
+                y: $api.dom('header').offsetHeight,
+                w: api.winWidth,
+                h: api.winHeight-$api.dom('header').offsetHeight-$api.dom('.buy').offsetHeight,
+            },
+        });
+
+      };
+      function setPrice(price){
+        $api.text($api.byId('price'), `￥${price}`);
+      }
+      function goBack(){
+        api.historyBack({
+        },function(ret,err){
+            if(!ret.status){
+                api.closeWin();
+            }
+        });
+      }
+      function goPay(){
+        api.execScript({
+            name: 'buy',
+            frameName: 'sureOrder',
+            script: 'creatOrder();'
+        });
+      }
+  </script>
+  </html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+              padding-top: .56rem;
+              background: #efefef;
+          }
+          .list{
+            padding-left: .56rem;
+            background: #fff;
+          }
+          .lie{
+            padding: .56rem 0;
+            border-bottom: 1px solid #eee;
+          }
+          .lie:last-child{
+            border: none;
+          }
+          .lie img{width: 4.44rem;height: 4.44rem;float: left;display: inline-block;}
+          .lie .cont{float: left;padding-left: .56rem;}
+          .lie .title{font-size: .72rem;color: #323232;line-height: 1.33rem;}
+          .text .info{font-size: .67rem;color: #393939;line-height: 1rem;}
+          .text .price{color: #962d31;}
+          .text .pro{font-size: .67rem;color: #a8a8a8;line-height: 1rem;}
+          .dibu{
+            font-size: .67rem;
+            color: #999;
+            height: 1.33rem;
+            text-align: center;
+            padding: .83rem 0;
+          }
+          .dibu img{
+            display: block;margin: 0 auto;height: 1.39rem;width: 1.39rem;
+          }
+          .none{
+            display: none !important;
+          }
+      </style>
+  </head>
+  <body>
+       <ul class="list" id="list">
+       </ul>
+       <div class="dibu none">
+         <div id='isend' class="none"> - 已经到底啦 - </div>
+         <div id="load" class="loading_more"></div>
+       </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+  let page=1;
+  var isEnd=false;
+  var listLoad = false;
+  apiready = function(){
+     getList(true);
+     api.addEventListener({
+        name:'scrolltobottom',
+        extra:{
+          threshold:0      //设置距离底部多少距离时触发，默认值为0，数字类型
+        }
+    }, function(ret, err){
+      if(!isEnd){
+        getList(false);
+       }
+    });
+     api.setRefreshHeaderInfo({
+        loadingImg: 'widget://image/loading_more.gif',
+        bgColor: '#ddd',
+        textColor: '#fff',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...'
+    }, function(ret, err) {
+        //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        setTimeout(()=>{
+          page=1;
+          getList(false);
+        },500)
+    });
+  };
+  function getList(isPro){
+    const list = $api.byId('list');
+    if(listLoad){
+      return ;
+    }
+    listLoad=true;
+    fnPost(
+      'https://www.hnchimay.com/hcCmmodity/getcommoditylist',
+      {
+        values:{
+          page,
+          isLuck:2,
+          classId:'',
+          name:api.pageParam.name,
+        }
+      },
+      isPro,
+      function(ret,err){
+        console.log(JSON.stringify(ret));
+        listLoad=false;
+        if(ret.success){
+          var html='';
+          ret.body.data.map((item)=>{
+            html+= '<li class="clearfix lie" onclick="goDetail('+item.id+')">'+
+               '<img src="'+item.img+'" alt="">'+
+               '<div class="cont">'+
+                 '<div class="title ellipsis">'+item.name+'</div>'+
+                 '<div class="text"><span class="pro">商品价格: </span><span class="info price">￥'+item.price+'</span></div>'+
+                 '<div class="text"><span class="pro">浏览次数: </span><span class="info">'+'99'+'</span></div></div></li>'
+          })
+          if(page==1){
+            $api.html(list, html);
+            $api.removeCls($api.dom('.dibu'), 'none');
+          }else{
+            $api.append(list, html);
+          }
+          if(ret.body.data.length<10){
+            isEnd=true;
+            $api.addCls($api.byId('load'), 'none');
+            $api.removeCls($api.byId('isend'), 'none');
+          }else {
+            isEnd=false;
+            $api.removeCls($api.byId('load'), 'none');
+            $api.addCls($api.byId('isend'), 'none');
+          }
+          page=page+1;
+          api.refreshHeaderLoadDone();
+        }
+      }
+    )
+  }
+  function goDetail(id) {
+    api.closeWin({
+        name: 'shop'
+    });
+
+    api.openWin({
+        name: 'shop',
+        url: './index.html',
+        pageParam: {
+            id,
+        },
+        bounces:false,
+        reload:true,
+    });
+  }
+
+  </script>
+  </html>

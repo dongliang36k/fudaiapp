@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>文档</title>
+    <script type="text/javascript" src="../script/rem.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <style>
+        body{
+          background: #f5f5f5;
+        }
+        .header{width: 100%;background:#f5f5f5 url(../img/RectangleCopy@2x.png) no-repeat;background-size: cover;padding-top: 1.73rem;text-align: center;padding-bottom: 1.33rem;}
+        .avatar{width: 4.16rem;height: 4.16rem;border-radius: 100%;margin: 0 auto;display: block;border: .21rem solid #FFFFFF;}
+        .name{font-size:.91rem;color:#333;line-height:1.28rem;margin: .69rem 0 .48rem 0;}
+        .many{font-size: .69rem;color: #333;line-height: 18px;}
+        ul{margin-top: .53rem;}
+        li{background: #fff;height: 2.61rem;border-bottom: 1px solid #eeeeee;box-sizing: border-box;padding-top: 15px;}
+        li img{float: left;display: block;width: .91rem;height: .91rem;margin: 1px .75rem;}
+        li span{float: left;display: block;font-size: .75rem;line-height: 1.07rem;color: #333;}
+        li .te{float: right;margin-right: .75rem;height: 17px;width: auto;}
+        .tui{width: 100%;font-size: .69rem;line-height: 46px;text-align: center;color: #999;margin-top: .96rem;background-color: #fff;}
+    </style>
+</head>
+<body>
+    <div class="header">
+
+    </div>
+    <ul>
+      <li class="clearfix" onclick="goDeal()">
+        <img src="../img/jiaoyi@3x.png" alt="" />
+        <span>我的主城</span>
+        <img class="te" src="../img/youjiantou@3x.png" alt="">
+      </li>
+      <li class="clearfix" onclick="gomyOrder()">
+        <img src="../img/dingdan@3x.png" alt="" />
+        <span>我的订单</span>
+        <img class="te" src="../img/youjiantou@3x.png" alt="">
+      </li>
+      <li class="clearfix" onclick="goRecord()">
+        <img src="../img/bao2@3x.png" alt="" />
+        <span>红包记录</span>
+        <img class="te" src="../img/youjiantou@3x.png" alt="">
+      </li>
+      <li class="clearfix" onclick="callNum()">
+        <img src="../img/phone@3x.png" alt="" />
+        <span>商务合作</span>
+        <img class="te" src="../img/youjiantou@3x.png" alt="">
+      </li>
+      <li class="clearfix" onclick="goPro()">
+        <img src="../img/wechant@3x.png" alt="" />
+        <span>联系客服</span>
+        <img class="te" src="../img/youjiantou@3x.png" alt="">
+      </li>
+    </ul>
+    <div class="tui" onclick="tuiLogin()">退出登录</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/md5.js"></script>
+<script type="text/javascript" src="../script/request.js"></script>
+<script type="text/javascript">
+     let myCityInfo ='';
+    apiready = function(){
+       isWith();
+       Login();
+    };
+    function isWith(){
+      var myhead = $api.dom('.header');
+      var userInfo = $api.getStorage('userInfo');
+      console.log(JSON.stringify(userInfo));
+      var html ='<img src="'+userInfo.avatarUrl+'" class="avatar" alt="头像" /><div class="user"><div class="name">'+userInfo.nickName+'</div><div class="many">'+userInfo.province+userInfo.city+'</div></div>';
+      $api.html(myhead, html);
+    }
+    function goWith(){
+      var money = $api.text($api.dom('.mymoney'));
+      if(Number(money)>=1){
+        api.openWin({
+            name: 'withdraw',
+            url: './withdraw/index.html',
+            pageParam:{
+              money:Number(money),
+            },
+            bounces:false,
+        });
+      }else {
+        return ;
+      }
+    }
+    function gomyOrder(uri) {
+      api.openWin({
+          name: 'cart',
+          url: './shop/cart.html',
+          pageParam: {
+              uri,
+          },
+          bounces:false,
+      });
+    }
+    function goRecord(){
+      api.openWin({
+          name: 'myrecord',
+          url: './record/index.html',
+          bounces:false,
+      });
+    }
+    function callNum(){
+      api.call({
+          type: 'tel_prompt',
+          number: '18268861786'
+      });
+    }
+    function goDeal() {
+      if(myCityInfo.body.hasCity){
+        var my = {};
+        my.state=myCityInfo.body.city.provinceName;
+        my.city=myCityInfo.body.city.cityName;
+        my.district=myCityInfo.body.city.name;
+        api.openWin({
+            name: 'infoKing',
+            url: './deal/info.html',
+            pageParam:{
+              city: my,
+            },
+        });
+      }else {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '尚未拥有主城',
+            text: '即将跳转主城交易页面...',
+            modal: false
+        });
+        setTimeout(()=>{
+          api.hideProgress();
+          api.openWin({
+              name: 'delwin',
+              url: './deal/index.html',
+          });
+        },1500)
+      }
+    }
+    function tuiLogin() {
+      var dialogBox = api.require('dialogBox');
+      dialogBox.alert({
+          texts: {
+              title: '提示',
+              content: '要退出该账号吗?',
+              leftBtnTitle: '取消',
+              rightBtnTitle: '确认'
+          },
+          styles: {
+              bg: '#fff',
+              w: 280,
+              corner:2,
+              content: {
+                  marginT:0,
+                  color: '#333',
+                  size: 16
+              },
+              left: {
+                  marginB: 7,
+                  marginL: 10,
+                  w: 130,
+                  h: 35,
+                  corner: 0,
+                  bg: '#fff',
+                  color:'#999',
+                  size: 14
+              },
+              right: {
+                  marginB: 7,
+                  marginL: 10,
+                  w: 130,
+                  h: 35,
+                  corner: 0,
+                  color:'#DD4848',
+                  bg: '#fff',
+                  size: 14
+              }
+          }
+      }, function(ret) {
+          var dialogBox = api.require('dialogBox');
+          dialogBox.close({
+              dialogName: 'alert'
+          });
+          if (ret.eventType == 'right') {
+            $api.rmStorage('userInfo');
+            api.openWin({
+                name: 'login',
+                url: './login.html',
+            });
+          }
+      });
+    }
+    function Login(){
+      var re= $api.getStorage('userInfo');
+      fnPost('https://www.hnchimay.com/hcSendRedPacket/login',{
+        values:{
+          openId: re.openId,
+          nickName:re.nickName,
+          gender:re.gender,
+          pid:0,
+          city: re.city,
+          province: re.province,
+          country:re.country,
+          avatarUrl:re.avatarUrl,
+          unionId: re.unionId,
+        }},
+        false,
+        function(msr,mse){
+          api.hideProgress();
+          console.log(JSON.stringify(msr));
+          if(msr){
+            myCityInfo=msr;
+          }
+        },true);
+    }
+    function goPro(){
+      var wx = api.require('wx');
+        wx.launchMiniProgram({
+            apiKey: 'wxed02780e15c94996',
+            miniProgramType: 'release',
+            userName: 'gh_5e8a7112f89f',
+            path:'pages/kefu/kefu',
+        }, function(ret, err) {
+            if (ret.status) {
+                api.toast({
+                    msg: '跳转成功',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+
+            } else {
+              api.toast({
+                  msg: '打开失败',
+                  duration: 2000,
+                  location: 'bottom'
+              });
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+              padding-top: .43rem;
+              background: #f5f5f5;
+          }
+          .list{
+            background: #fff;
+          }
+          .lie{
+            padding: .75rem 0;
+            border-bottom: 1px solid #eee;
+          }
+          .lie:last-child{
+            border: none;
+          }
+          .lie img{width: 4.11rem;height: 4.37rem;float: left;display: inline-block;margin: 0 .53rem 0 .85rem;}
+          .lie .cont{float: left;padding-top: .37rem;width: 13.87rem;}
+          .myt{width: 100%;}
+          .lie .title{float: left;font-size: .75rem;color: #333;line-height: 1.07rem;margin-bottom: .53rem;width: 10.67rem;}
+          .lie .price{float: right;font-size: .75rem;line-height: 1.07rem;color: #333;margin-right: .27rem;text-align: right;}
+          .lie .name{font-size: .59rem;color: #333;line-height: .85rem;margin-bottom: .48rem;}
+          .lie .time{font-size: .59rem;color: #999;line-height: .85rem;}
+          .dibu{
+            font-size: .67rem;
+            color: #999;
+            height: 1.33rem;
+            text-align: center;
+            padding: .83rem 0;
+          }
+          .dibu img{
+            display: block;margin: 0 auto;height: 1.39rem;width: 1.39rem;
+          }
+          .none{
+            display: none !important;
+          }
+      </style>
+  </head>
+  <body>
+       <ul class="list" id="list">
+       </ul>
+       <div class="dibu none">
+         <div id='isend' class="none"> - 已经到底啦 - </div>
+         <div id="load" class="loading_more"></div>
+       </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+  let page=1;
+  var isEnd=false;
+  var listLoad = false;
+  apiready = function(){
+     getList(true);
+     api.addEventListener({
+        name:'scrolltobottom',
+        extra:{
+          threshold:0      //设置距离底部多少距离时触发，默认值为0，数字类型
+        }
+    }, function(ret, err){
+      if(!isEnd){
+        getList(false);
+       }
+    });
+     api.setRefreshHeaderInfo({
+        loadingImg: 'widget://image/loading_more.gif',
+        bgColor: '#ddd',
+        textColor: '#fff',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...'
+    }, function(ret, err) {
+        //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        setTimeout(()=>{
+          page=1;
+          getList(false);
+        },500)
+    });
+  };
+  function getList(isPro){
+    const list = $api.byId('list');
+    if(listLoad){
+      return ;
+    }
+    listLoad=true;
+    fnGet(
+      'https://www.hnchimay.com/hcCmmodity/getcommodityOpenlist',
+      {
+        page,
+      },
+      isPro,
+      function(ret,err){
+        console.log(JSON.stringify(ret));
+        listLoad=false;
+        if(ret.success){
+          var html='';
+          ret.body.data.map((item)=>{
+            html+= '<li class="clearfix lie" onclick="goPrize('+item.id+')">'+
+               '<img src="'+item.img+'" alt="">'+
+               '<div class="cont">'+
+                 '<div class="clearfix myt"><div class="title ellipsis">'+item.name+'</div><div class="price">￥'+item.price+'</div></div>'+
+                 '<div class="name ellipsis">中奖用户: '+item.nickName+' (参与'+item.luckime+'次)</div>'+
+                 '<div class="time">开奖时间: '+item.stime+'</div>'+
+                 '</div></li>'
+          })
+          if(page==1){
+            $api.html(list, html);
+          }else{
+            $api.append(list, html);
+            $api.removeCls($api.dom('.dibu'), 'none');
+          }
+          if(ret.body.data.length<10){
+            isEnd=true;
+            $api.addCls($api.byId('load'), 'none');
+            $api.removeCls($api.byId('isend'), 'none');
+          }else {
+            isEnd=false;
+            $api.removeCls($api.byId('load'), 'none');
+            $api.addCls($api.byId('isend'), 'none');
+          }
+          page=page+1;
+          api.refreshHeaderLoadDone();
+        }
+      }
+    )
+  }
+  function goPrize(id){
+    api.openWin({
+        name: 'prize',
+        url: './prize.html',
+        pageParam: {
+            id,
+        },
+        bounces:false,
+        reload:true,
+    });
+
+  }
+  </script>
+  </html>

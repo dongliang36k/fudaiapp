@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      header {
+          display: block;
+          text-align: center;
+          background-color: #fff;
+          color: #333;
+          font-size: 1rem;
+          height: 2.78rem;
+          line-height: 2.78rem;
+            position: relative;
+      }
+      .qian{
+        width: 18.29rem;
+        height: 10.96rem;
+        box-sizing: border-box;
+        padding-top: 1.33rem;
+        margin: 0 auto;
+        margin-top: .53rem;
+        background-color: #fff;
+        box-shadow: 0 .27rem .43rem 0 rgba(215,215,215,0.44);
+        border-radius: .43rem;
+        text-align: center;
+      }
+      .qian .title{
+        font-size: 1.81rem;
+        line-height: 1.6rem;
+        color: #333;
+        margin-bottom: .32rem;
+      }
+      .qian .yu{
+        font-size: .75rem;
+        line-height: 1.07rem;
+        color: #999;
+      }
+      .qian img{
+        height: 1.07rem;
+        display: inline-block;
+        margin-right: .53rem;
+      }
+      .king{
+        margin-bottom: 1.07rem;
+        color: #dd4848;
+      }
+      .fle{
+        display: flex;
+        justify-content: space-around;
+        margin-top: .43rem;
+      }
+      .fle .num{
+        font-size: .91rem;
+        line-height: 1.6rem;
+        color: #333;
+      }
+      .fle .jie{
+        font-size: .59rem;
+        line-height: .85rem;
+        color: #999;
+      }
+      .lie{width: 1px;background: #eee;height: 2.03rem;margin-top: .21rem;}
+      body{
+        background: #f5f5f5;
+      }
+      .head i{
+        display:inline-block;
+        position: absolute;
+        font-size: .96rem;
+        left: .8rem;
+      }
+      .btn{
+         color: #fff;
+         background: #dd4848;
+         width: 18.29rem;
+         margin: 0 auto;
+         text-align: center;
+         font-size: .85rem;
+         line-height: 2.4rem;
+         border-radius: .21rem;
+         box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.59);
+      }
+      .bottom{
+        width: 100%;
+        margin:0 auto;
+        padding-bottom: 1.5rem;
+      }
+      .h{
+        font-size: .8rem;
+        line-height: 1.87rem;
+        color: #dd4848;
+      }
+      .cont{
+        font-size: .69rem;
+        line-height: 1.33rem;
+        color: 333;
+      }
+      ul{
+        padding: .85rem;
+      }
+      </style>
+  </head>
+  <body>
+       <header class="head">
+         <i class="iconfont icon-back" onclick="goBack()"></i>
+         <span class="cityName">主城信息</span>
+       </header>
+       <div class="qian">
+         <div class="king"><img src="../../img/city@3x.png" alt="">会飞的鱼</div>
+         <div class="title">0</div><div class="yu">城主价格(元)</div><div class="fle"><div><div class="num">0</div><div class="jie">持有总收益(元)</div></div>
+           <div class="lie"></div><div class="jin"><div class="num">0</div><div class="jie">昨日收益(元)</div></div>
+          <div class="lie"></div><div><div class="num">0</div><div class="jie">本月收益(元)</div></div></div>
+       </div>
+       <ul>
+         <li>
+           <div class="h">
+             1.红包分红
+           </div>
+           <div class="cont">
+             当前主城范围内每日抢得红包总金额的5%奖励为城主收益
+           </div>
+         </li>
+         <li>
+           <div class="h">
+             2.溢价收益
+           </div>
+           <div class="cont">
+             当前主城被他人购买时主城价格涨幅的20%归城主所有,主城价格=初始主城价格+历史主城红包总金额10%+主城注册人数(1人对应1元)+上次主城价格5%
+           </div>
+         </li>
+         <li>
+           <div class="h">
+             3.主城唯一
+           </div>
+           <div class="cont">
+             每位用户只能同时拥有一座主城,主城当日购买,收益次日开始计算(不可以主动出售主城)
+           </div>
+         </li>
+       </ul>
+       <div class="bottom">
+         <div class="btn" onclick="goPay()">
+             立即购买
+         </div>
+       </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+      let mycity={};
+      apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        setTitle();
+        api.addEventListener({
+            name: 'viewappear'
+        }, function(ret, err) {
+            setTitle();
+        });
+      };
+      function goBack(){
+        api.historyBack({
+        },function(ret,err){
+            if(!ret.status){
+                api.closeWin();
+            }
+        });
+      }
+      function setTitle(){
+        var city=api.pageParam.city;
+        fnGet(
+          'https://www.hnchimay.com/addrCity/getcitybyname',
+          {
+            city: city.city,
+            state: city.state,
+            district: city.district,
+            uid: $api.getStorage('userInfo').id,
+          },
+          true,
+          function(res,err){
+            mycity=res;
+            console.log(JSON.stringify(res));
+            var html='<div class="king"><img src="../../img/city@3x.png" alt="">'+res.body.data.belonger+'</div>'+
+                   '<div class="title">'+res.body.data.price+'</div><div class="yu">城主价格(元)</div><div class="fle"><div><div class="num">'+res.body.data.myIncrease+'</div><div class="jie">持有总收益(元)</div></div>'+
+                   '<div class="lie"></div><div class="jin"><div class="num">'+res.body.data.yestdayIncrease+'</div><div class="jie">昨日收益(元)</div></div>'+
+                   '<div class="lie"></div><div><div class="num">'+res.body.data.monthIncrease+'</div><div class="jie">本月收益(元)</div></div></div>';
+            $api.html($api.dom('.qian'), html);
+            $api.text($api.dom('.cityName'), `${city.city}${city.district}`);
+          }
+        )
+      }
+      function goPay(){
+        if(mycity.body.isCity){
+          api.toast({
+              msg: '您已经是城主,只能同时拥有一座主城',
+              duration: 2000,
+              location: 'bottom'
+          });
+        }else{
+          api.openWin({
+              name: 'payKing',
+              url: './pay.html',
+              pageParam:{
+                cityId:mycity.body.data.id,
+                price:mycity.body.data.price,
+              }
+          });
+        }
+      }
+  </script>
+  </html>

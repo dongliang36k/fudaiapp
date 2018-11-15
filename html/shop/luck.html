@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>抽奖历史</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          body{
+            background: #fff;
+          }
+          .prod{
+            width: 100%;
+            height: 15.95rem;
+            overflow: hidden;
+          }
+          img{width: 100%;height:auto;display:block;}
+          .xia{
+            padding: 0 .85rem;
+          }
+          .mypro{
+            width: 100%;
+            padding: .75rem 0 .32rem 0;
+          }
+          .title{font-size: .75rem;color: #333;line-height: 1.07rem;float: left;width: 14.93rem;}
+          .content{font-size: .59rem;color: #999;line-height: .85rem;width: 16rem;}
+          .jia{float: right;color: #333;font-size: 1.07rem;line-height: 20px;color: #333;}
+          .jia span{display: inline-block;font-size: 13px;line-height: 13px;}
+          .mbtn{
+            background: #DD4848;
+            box-shadow: 0 3px 5px 0 rgba(211,56,56,0.50);
+            border-radius: 4px;
+            width: 100%;
+            line-height: 2.24rem;
+            color: #fff;
+            text-align: center;
+            font-size: .75rem;
+            margin: 1.07rem 0 1.28rem 0;
+          }
+          .dibu{
+            font-size: .67rem;
+            color: #999;
+            height: 1.33rem;
+            text-align: center;
+            padding: .83rem 0;
+          }
+          .dibu img{
+            display: block;margin: 0 auto;height: 1.39rem;width: 1.39rem;
+          }
+          .none{
+            display: none !important;
+          }
+      </style>
+  </head>
+  <body>
+      <ul id='list'>
+
+      </ul>
+      <div class="dibu none">
+        <div id='isend' class="none"> - 已经到底啦 - </div>
+        <div id="load" class="loading_more"></div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+      let page=1;
+      var isEnd=false;
+      var listLoad = false;
+      apiready = function(){
+         getList(true);
+         api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0        //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+          if(!isEnd){
+            getList(false);
+           }
+        });
+         api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/loading_more.gif',
+            bgColor: '#ddd',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            setTimeout(()=>{
+              page=1;
+              getList(false);
+            },500)
+        });
+      };
+      function getList(isPro){
+        const list = $api.byId('list');
+        if(listLoad){
+          return ;
+        }
+        listLoad=true;
+        fnPost(
+          'https://www.hnchimay.com/hcCmmodity/getcommoditylist',
+          {
+            values:{
+              page,
+              isLuck:1,
+              classId:'',
+            }
+          },
+          isPro,
+          function(ret,err){
+            listLoad=false;
+            if(ret.success){
+              var html='';
+              ret.body.data.map((item)=>{
+                html+='<li>'+
+                  '<div class="prod"><img src="'+item.img+'" alt="" /></div>'+
+                  '<div class="xia"><div class="mypro clearfix"><div class="title ellipsis">'+item.name+'</div><div class="jia"><span>￥</span>'+item.price+'</div></div>'+
+                  '<div class="content ellipsis">'+item.title+'</div>'+
+                  '<div class="mbtn" onclick="goPrize('+item.id+')">免费抽奖</div></div>'+
+                '</li>'
+              })
+              if(page==1){
+                $api.html(list, html);
+                $api.removeCls($api.dom('.dibu'), 'none');
+              }else{
+                $api.append(list, html);
+              }
+              if(ret.body.data.length<10){
+                isEnd=true;
+                $api.addCls($api.byId('load'), 'none');
+                $api.removeCls($api.byId('isend'), 'none');
+              }else {
+                isEnd=false;
+                $api.removeCls($api.byId('load'), 'none');
+                $api.addCls($api.byId('isend'), 'none');
+              }
+              page=page+1;
+              api.refreshHeaderLoadDone()
+            }
+          }
+        )
+      }
+      function goPrize(id){
+        api.openWin({
+            name: 'prize',
+            url: './prize.html',
+            pageParam: {
+                id,
+            },
+            bounces:false,
+        });
+
+      }
+  </script>
+  </html>

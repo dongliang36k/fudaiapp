@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <style>
+      header {
+          display: block;
+          text-align: center;
+          background-color: #fff;
+          color: #333;
+          font-size: 1rem;
+          height: 2.78rem;
+          line-height: 2.78rem;
+            position: relative;
+      }
+      body{
+        background: #fff;
+        padding: 0 .85rem;
+      }
+      .head i{
+        display:inline-block;
+        position: absolute;
+        font-size: .96rem;
+        left: .8rem;
+      }
+      .btn{
+         color: #fff;
+         background: #dd4848;
+         width: 18.29rem;
+         margin: 0 auto;
+         text-align: center;
+         font-size: .85rem;
+         line-height: 2.4rem;
+         border-radius: .21rem;
+         box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.59);
+      }
+      input{
+        display: inline-block;
+        line-height: 2.4rem;
+        font-size: .96rem;
+        padding-top: .96rem;
+        border-bottom:  1px solid #eee;
+        width: 100%;
+        color: #333;
+      }
+      .account{
+        margin: 1.07rem 0;
+      }
+      </style>
+  </head>
+  <body>
+       <header class="head">
+         <i class="iconfont icon-back" onclick="goBack()"></i>
+         账号登录
+       </header>
+       <div class="account">
+           <input id='userName' type="number" placeholder="请输入账户名"/>
+           <input id='password' type="password" placeholder="请输入账号密码" />
+       </div>
+       <div class="bottom">
+         <div class="btn" onclick="goLogin()">
+             登录
+         </div>
+       </div>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript" src="../script/md5.js"></script>
+  <script type="text/javascript" src="../script/request.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        isShow();
+      };
+      function isShow(){
+        fnPost(
+          'https://www.hnchimay.com/hcSendRedPacket/openlogin',
+          {values:{}},
+          false,
+          function(res,err){
+            if(res.success){
+              if(res.body.isLogin!=1){
+                api.alert({
+                    title: '友情提示',
+                    msg: '账号注册暂时关闭，请前往微信登录',
+                    buttons:['我知道了']
+                }, function(ret, err){
+                });
+              }
+            }
+          },true)
+      }
+      function goBack(){
+        api.historyBack({
+        },function(ret,err){
+            if(!ret.status){
+                api.closeWin();
+            }
+        });
+      }
+      function goLogin(){
+        const userName=$api.val($api.byId('userName'));
+        const passWord=$api.val($api.byId('password'))
+        if(userName!='' && passWord !=''){
+          api.showProgress({
+              style: 'default',
+              animationType: 'fade',
+              title: '登录中...',
+              text: '先喝杯茶...',
+              modal: false
+          });
+          fnPost(
+             'https://www.hnchimay.com/hcSendRedPacket/adminlogin',
+             { values:{
+               userName,passWord
+             }},
+             false,
+             function(res,err){
+               api.hideProgress();
+               if(res.success){
+                   $api.setStorage('userInfo', res.body.data);
+                   api.rebootApp();
+               }else {
+                 api.toast({
+                     msg: res.message,
+                     duration: 2000,
+                     location: 'bottom'
+                 });
+
+               }
+             },
+             true)
+        }else {
+          api.toast({
+              msg: '请输入账户名和密码后再登录',
+              duration: 2000,
+              location: 'bottom'
+          });
+        }
+      }
+  </script>
+  </html>

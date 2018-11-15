@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+        body{background-color: #fff;padding: 0 1.11rem;}
+        .shuru{font-size: .89rem;margin-bottom: .56rem;display: block;border: 0;line-height: 1.56rem;box-sizing: border-box;width: 100%;background-color: #fff;resize:none;}
+        .shuru:focus{outline: none;border: none;}
+        .cont{background-color: #fff;width: 100%;margin-bottom:1.11rem;}
+        .mylist{float: left;}
+        .list{float: left;width: 4.44rem;height: 4.44rem;display: block;margin-right: 1.11rem;border: 1px solid #f4f4f4;position: relative;}
+        .list img{width: 100%;height: 100%;display: block;}
+        .list .myicon{position: absolute;top:-.44rem;right: -.44rem;width: 1rem;height: 1rem;display: block;}
+        .none{display: none;}
+        .upimg{width: 4.44rem;height: 2.78rem;background-color:#f4f4f4;border-radius: .28rem;text-align: center;font-size: .78rem;color: #666;padding: .83rem 0;float: left;}
+        .myjia{font-size: 1rem;}
+        .mytu{margin-top: .56rem;}
+        .lie{background: #fff;padding: 0 .56rem;border-radius: .21rem;border: 1px solid #e5e5e5;}
+        .lie div{float: left;font-size: .89rem;line-height: 2.44rem;color:#000;text-align: right;}
+        .lie .right{float: right;}
+        .lie .right i{color: #d1d1d1;}
+        .lie .min{float: right;}
+        .min input{outline: none;text-align: right;padding: 0 .78rem;line-height: 1.17rem;}
+        .mypa{padding: 0 .78rem;}
+        .text{font-size: .67rem;color: #999;padding-left: .56rem;margin: .56rem 0 .83rem;}
+        .fc{color: #DD4848;font-size: .64rem;line-height: .91rem;}
+        .mbtn{display: block;margin: 0 auto;width: 100%;height: 2.4rem;line-height: 2.4rem;text-align: center;font-size: .8rem;border-radius: .21rem;background:#DD4848;color:#FFF;box-shadow: 0 3px 5px 0 rgba(211,56,56,0.59);}
+      </style>
+  </head>
+  <body>
+      <div class="mytext">
+        <textarea class="shuru myInput" oninput="textChange()" name="name" rows="3" cols="80" placeholder="你想对大家说..."></textarea>
+        <div class="cont clearfix">
+          <div id="imglist" class="mylist clearfix">
+
+          </div>
+          <div class="upimg" onclick="upImage()">
+              <i class="myjia iconfont icon-xiangji"></i>
+              <div class="mytu">添加图片</div>
+          </div>
+        </div>
+        <div class="lie clearfix">
+          <div class="left">
+            总金额
+          </div>
+          <div class="right">
+            元
+          </div>
+          <div class="min">
+            <input class="myInput" type="number" oninput="textChange()" name="" value="" placeholder="输入金额">
+          </div>
+        </div>
+        <div class="text">附近的人可随机领取该红包</div>
+        <div class="lie clearfix">
+          <div class="left">
+            红包个数
+          </div>
+          <div class="right">
+            个
+          </div>
+          <div class="min">
+            <input class="myInput" type="number" oninput="textChange()" name="" value="" placeholder="输入个数">
+          </div>
+        </div>
+        <div class="text">该红包总的个数(单个红包价值不低于1分)</div>
+        <div class="lie clearfix" onclick="goSet()">
+          <div class="left">
+            发送范围
+          </div>
+          <div class="right">
+            <i class="iconfont icon-arrow-right"></i>
+          </div>
+          <div id="srange" class="min mypa">
+            全国
+          </div>
+        </div>
+        <div class="text">在此范围内的人可领取该红包</div>
+        <div class="text fc" onclick="goKefu()">商业推广请点我联系官方</div>
+        <div class="mbtn" onclick="sendRed()">
+          塞钱进红包
+        </div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+       let imgKey = '';
+      apiready = function(){
+          api.addEventListener({
+            name:'viewappear'
+          }, function(ret, err){
+             $api.html($api.dom('#srange'), getRange($api.getStorage('range')));
+          });
+
+      };
+      function getRange(range){
+        switch (Number(range)) {
+          case 1:
+            return '一公里'
+            break;
+          case 3:
+            return '三公里'
+            break;
+          case 5:
+            return '五公里'
+            break;
+          case 10:
+            return '全区县'
+            break;
+          case 50:
+            return '全市'
+            break;
+          case 500:
+            return '全国'
+            break;
+          default:
+            return '全国'
+        }
+      }
+      function upImage(){
+        const list= $api.dom('#imglist');
+        api.getPicture({
+            sourceType: 'library',
+        }, function(ret, err) {
+             console.log(JSON.stringify(ret));
+            if (ret && ret.data) {
+              loadImage(ret.data);
+               $api.append(list, '<div class="list"><img src="'+ret.data+'" alt=""/><img onclick="delImage(this)" class="myicon" src="../../icon/delete.png" /></div>');
+               if($api.domAll('.list').length>0){
+                 $api.addCls($api.dom('.upimg'), 'none');
+               }else{
+                 $api.removeCls($api.dom('.upimg'), 'none');
+               }
+            } else {
+                console.log(JSON.stringify(err));
+            }
+        });
+      }
+      function loadImage(url){
+        fnPost('https://www.hnchimay.com/upload/getQINIUToken',
+          { values:{}},false,
+          function(res,err){
+            if(res.success){
+              api.showProgress({
+                  style: 'default',
+                  animationType: 'fade',
+                  title: '图片上传中...',
+                  text: '先喝杯茶...',
+                  modal: false
+              });
+              api.ajax({
+                  url: 'https://upload.qiniup.com/',
+                  method: 'post',
+                  data: {
+                      values: {
+                          token:res.body.token,
+                          key:new Date().getTime(),
+                      },
+                      files: {
+                          file: url,
+                      }
+                  }
+              },function(ret, err){
+                api.hideProgress();
+                  console.log(JSON.stringify(ret));
+                  if (ret) {
+                      imgKey=ret.key;
+                  } else {
+                      api.toast({
+                          msg: '上传失败，请重试',
+                          duration: 2000,
+                          location: 'bottom'
+                      });
+
+                  }
+              });
+            }
+          }
+        )
+      }
+      function delImage(e){
+        $api.remove($api.closest(e, '.list'));
+        if($api.domAll('.list').length>2){
+          $api.addCls($api.dom('.upimg'), 'none');
+        }else{
+          $api.removeCls($api.dom('.upimg'), 'none');
+        }
+      }
+      function goSet(){
+        api.openWin({
+            name: 'setrange',
+            url: './setrange.html',
+        });
+
+
+      }
+      function textChange(){
+        var text = $api.domAll('.myInput');
+        var btn = $api.dom('.mbtn');
+        if($api.val(text[0])==''||$api.val(text[1])==''||$api.val(text[2])==''){
+          $api.addCls(btn,'disabled');
+        }else {
+          $api.removeCls(btn,'disabled');
+        }
+      }
+      function sendRed(){
+        var btn = $api.dom('.mbtn');
+        var text = $api.domAll('.myInput');
+        if($api.val(text[0])==''||$api.val(text[1])==''||$api.val(text[2])==''){
+          api.toast({
+              msg: '请确保填写完整',
+              duration: 2000,
+              location: 'middle'
+          });
+
+          return;
+        }
+        if(imgKey==''){
+          api.toast({
+              msg: '请上传一张图片哦',
+              duration: 2000,
+              location: 'middle'
+          });
+          return;
+        }
+        var wxPay = api.require('wxPay');
+        var text = $api.domAll('.myInput');
+        fnPost('https://www.hnchimay.com/hcSendRedPacket/sendAppRedPacket',
+        {values:{
+          imgs: imgKey ? `http://ozrczu0r3.bkt.clouddn.com/${imgKey}` : '',
+          packageType:1,
+          content:$api.val(text[0]),
+          num:$api.val(text[2]),
+          money:$api.val(text[1]),
+          range:$api.getStorage('range') || 500,
+          isEncrypt:'',
+          password:'',
+          url:'',
+          sendUserId:$api.getStorage('userInfo').id,
+          longitude:$api.getStorage('location').lon,
+          latitude:$api.getStorage('location').lat,
+        }},true,
+        function(res,err){
+          if(res.success){
+            wxPay.payOrder({
+                apiKey: res.body.wxpayParam.appid,
+                orderId: res.body.wxpayParam.prepayid,
+                mchId: '1515602321',
+                nonceStr: res.body.wxpayParam.noncestr,
+                timeStamp: res.body.wxpayParam.timestamp,
+                package: res.body.wxpayParam.package,
+                sign: res.body.wxpayParam.sign,
+            }, function(ret, err) {
+                if (ret.status) {
+                    api.showProgress({
+                        style: 'default',
+                        animationType: 'fade',
+                        title: '支付成功',
+                        text: '即将跳转',
+                        modal: false
+                    });
+                    setTimeout(()=>{
+                      api.hideProgress();
+                      api.historyBack({
+                      },function(ret,err){
+                          if(!ret.status){
+                              api.closeWin();
+                          }
+                      });
+                    },1500)
+                } else {
+                  if(err.code=='-2'){
+                    api.toast({
+                        msg: '取消支付',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                  }else {
+                    api.toast({
+                        msg: '支付失败，请重试',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                  }
+
+                }
+            });
+          }
+        }
+      )
+      }
+      function goKefu(){
+        var wx = api.require('wx');
+          wx.launchMiniProgram({
+              apiKey: 'wxed02780e15c94996',
+              miniProgramType: 'release',
+              userName: 'gh_5e8a7112f89f',
+              path:'pages/kefu/kefu',
+          }, function(ret, err) {
+              if (ret.status) {
+                  api.toast({
+                      msg: '跳转成功',
+                      duration: 2000,
+                      location: 'bottom'
+                  });
+
+              } else {
+                api.toast({
+                    msg: '打开失败',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+              }
+          });
+      }
+  </script>
+  </html>

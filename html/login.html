@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <style>
+          header {
+              display: block;
+              text-align: center;
+              background-color: #fff;
+              color: #333;
+              font-size: 1rem;
+              height: 2.78rem;
+              line-height: 2.78rem;
+          }
+          body{
+            background-color: #fff;
+          }
+          .cont{
+            height: 24.81rem;
+          }
+          .cont img{
+            display: block;
+            width: 100%;
+            height: auto;
+          }
+          .bottom p{
+            margin-top: 1.12rem;
+            font-size: .85rem;
+            color: #666;
+            text-align: center;
+          }
+          .btn{
+            background: #DD4848;
+            width: 11.41rem;
+            line-height: 2.45rem;
+            margin: 0 auto;
+            color: #fff;
+            text-align: center;
+            font-size: .85rem;
+            box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.59);
+            border-radius: .21rem;
+          }
+      </style>
+  </head>
+  <body>
+      <header class="head">
+      </header>
+      <div class="cont">
+
+      </div>
+      <div class="bottom">
+        <div class="btn" onclick="Login()">
+          立即体验
+        </div>
+      </div>
+  </body>
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript" src="../script/md5.js"></script>
+  <script type="text/javascript" src="../script/request.js"></script>
+  <script type="text/javascript">
+      var backSecond = 0;
+      apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        api.setStatusBarStyle({
+            style: 'dark',
+            color: '#fff'
+        });
+        var UIScrollPicture = api.require('UIScrollPicture');
+        UIScrollPicture.open({
+            rect: {
+                x: 0,
+                y: $api.dom('header').offsetHeight,
+                w: api.winWidth,
+                h: 406,
+            },
+            data: {
+                paths: [
+                    'widget://img/lunbo1.png',
+                    'widget://img/lunbo2.png',
+                    'widget://img/lunbo3.png',
+                ],
+            },
+            styles: {
+                indicator: {
+                   dot:{
+                     w:10,
+                     h:10,
+                     r:5,
+                     margin:9,
+                  },
+                    align: 'center',
+                    color: '#E4E4E4',
+                    activeColor: '#dd4848'
+                }
+            },
+            contentMode: 'scaleToFill',
+            interval: 3,
+            fixedOn: api.frameName,
+            loop: false,
+            fixed: false
+        }, function(ret, err) {
+
+        });
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            var curSecond = (new Date().getTime()) / 1000;
+            if (Math.abs(curSecond - backSecond) > 2) {
+                backSecond = curSecond;
+                api.toast({
+                    msg: '再按一次退出',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.closeWidget({
+                    id: 'A6087487695567', //这里改成自己的应用ID
+                    retData: {
+                        name: 'closeWidget'
+                    },
+                    silent: true
+                });
+            }
+        });
+        var wx=api.require('wx');
+        wx.isInstalled(function(ret, err){
+            if(ret.installed){
+                $api.html($api.dom('.btn'), '<i class="iconfont icon-weixin1"></i>微信登录');
+            }
+        });
+      };
+      function Login(){
+        var wx = api.require('wx');
+        wx.isInstalled(function(ret, err){
+            if(ret.installed){
+              wx.auth({
+                apiKey:'wxed02780e15c94996',
+              }, function(ret, err) {
+                  if (ret.status) {
+                      wx.getToken({
+                          code:ret.code,
+                      }, function(res, er) {
+
+                          if (res.status) {
+                              wx.getUserInfo({
+                                  accessToken: res.accessToken,
+                                  openId: res.openId,
+                              }, function(re,es){
+                                  if(re.status){
+                                    console.log(JSON.stringify(re));
+                                    api.showProgress({
+                                        style: 'default',
+                                        animationType: 'fade',
+                                        title: '登录中...',
+                                        text: '先喝杯茶...',
+                                        modal: false
+                                    });
+                                    fnPost('https://www.hnchimay.com/hcSendRedPacket/login',{
+                                      values:{
+                                        openId: re.openid,
+                                        nickName:re.nickname,
+                                        gender:re.sex,
+                                        pid:0,
+                                        city: re.city,
+                                        province: re.province,
+                                        country:re.country,
+                                        avatarUrl:re.headimgurl,
+                                        unionId: re.unionid,
+                                      }},
+                                      false,
+                                      function(msr,mse){
+                                        api.hideProgress();
+                                        console.log(JSON.stringify(msr));
+                                        if(msr){
+                                          $api.setStorage('userInfo', msr.body.data);
+                                          api.rebootApp();
+                                        }
+                                      },true);
+                                  }else{
+                                    api.toast({
+                                        msg: es.code,
+                                        duration: 2000,
+                                        location: 'bottom'
+                                    });
+                                  }
+                              });
+
+                          } else {
+                            api.toast({
+                                msg: er.code,
+                                duration: 2000,
+                                location: 'bottom'
+                            });
+                          }
+                      });
+                  } else {
+                    api.toast({
+                        msg: err.code,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                  }
+              });
+            }else{
+                goZhang()
+            }
+        });
+      }
+      function goZhang(){
+        fnPost(
+          'https://www.hnchimay.com/hcSendRedPacket/openlogin',
+          {values:{}},
+          false,
+          function(res,err){
+            if(res.success){
+              if(res.body.isLogin!=1){
+                api.alert({
+                    title: '友情提示',
+                    msg: '您未下载微信，请先下载微信使用微信登录',
+                    buttons:['我知道了']
+                }, function(ret, err){
+                });
+                $api.html($api.dom('.btn'), '<i class="iconfont icon-weixin1"></i>微信登录');
+              }else if(res.body.isLogin==1){
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '登录中...',
+                    text: '先喝杯茶...',
+                    modal: false
+                });
+                fnPost(
+                   'https://www.hnchimay.com/hcSendRedPacket/adminlogin',
+                   { values:{
+                     userName: '666',
+                     passWord: '666',
+                   }},
+                   false,
+                   function(res,err){
+                     api.hideProgress();
+                     console.log(JSON.stringify(res));
+                     console.log(JSON.stringify(err));
+                     if(res.success){
+                         $api.setStorage('userInfo', res.body.data);
+                         api.rebootApp();
+                     }else {
+                       api.toast({
+                           msg: res.message,
+                           duration: 2000,
+                           location: 'bottom'
+                       });
+
+                     }
+                   },
+                   true)
+              }
+            }
+          },true)
+      }
+  </script>
+  </html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>文档</title>
+    <script type="text/javascript" src="../script/rem.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <style>
+       .header{
+         height: 11.4rem;
+         background-image: linear-gradient(-180deg, #FF9E9E 0%, #DD4848 97%);
+       }
+       .top{
+         background-color: #f5f5f5;
+         padding-bottom: 3rem;
+         position: relative;
+       }
+       .qian{
+         width: 18.29rem;
+         height: 12.96rem;
+         box-sizing: border-box;
+         padding-top: 1.33rem;
+         position: absolute;
+         top:1rem;
+         left: .85rem;
+         background-color: #fff;
+         box-shadow: 0 .27rem .43rem 0 rgba(215,215,215,0.44);
+         border-radius: .43rem;
+         text-align: center;
+       }
+       .qian .title{
+         font-size: 1.81rem;
+         line-height: 1.6rem;
+         color: #333;
+         margin-bottom: .32rem;
+       }
+       .qian .yu{
+         font-size: .75rem;
+         line-height: 1.07rem;
+         color: #999;
+       }
+       .fle{
+         display: flex;
+         justify-content: space-around;
+         margin-top: .43rem;
+       }
+       .fle .num{
+         font-size: .91rem;
+         line-height: 1.6rem;
+         color: #333;
+       }
+       .fle .jie{
+         font-size: .59rem;
+         line-height: .85rem;
+         color: #999;
+       }
+       .lie{width: 1px;background: #eee;height: 2.03rem;margin-top: .21rem;}
+       .btn{
+         background: #DD4848;
+        box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.59);
+        border-radius: .21rem;
+        width: 15.47rem;
+        height: 2.4rem;
+        font-size: .8rem;
+        line-height: 2.4rem;
+        color: #fff;
+        margin: 1.49rem auto;
+       }
+       .tabs{
+         width: 100%;
+         box-sizing: border-box;
+         height: 2.35rem;
+         background-color: #fff;
+         display: flex;
+         display: -webkit-flex;
+         justify-content: flex-start;
+         border: 1px solid #eee;
+       }
+       .tab{
+         -webkit-box-flex:1;
+         -ms-flex:1;
+         flex:1;
+         height:2.13rem;
+         line-height:2.13rem;
+         text-align:center;
+         font-size:.75rem;
+         color: #999;
+       }
+       .select {
+         position: relative;
+         color: #DD4848;
+       }
+       .select::before {
+         content: ' ';
+         position: absolute;
+         bottom: 0;
+         left: .64rem;
+         width: 5.39rem;
+         height: .11rem;
+         background-color: #DD4848;
+       }
+       .list li{
+         height: 2.56rem;
+         border-bottom: 1px solid #eee;
+         background-color: #fff;
+       }
+       .list li img{
+          float:left;
+          display: block;
+       }
+       .list .pai{
+         margin: .59rem 1.49rem 0 .85rem;
+         width: auto;
+         height: 1.39rem;
+       }
+       .list .avatar{
+         margin: .48rem .53rem 0 0;
+         border-radius: 100%;
+         width: 1.39rem;
+         height: 1.39rem;
+       }
+       .list .ming{
+         float: left;
+         font-size: .75rem;
+         line-height: 2.56rem;
+         color: #333;
+         margin: 0 1.81rem 0 1.23rem;
+       }
+       .list .name{
+         float: left;
+         font-size: .69rem;
+         line-height: 2.56rem;
+         color: #333;
+       }
+       .list .price{
+         float: right;
+         margin-right:.85rem;
+         font-size: .69rem;
+         line-height: 2.56rem;
+         color: #333;
+       }
+    </style>
+</head>
+<body>
+  <div class="top">
+    <div class="header">
+    </div>
+    <div class="qian">
+
+    </div>
+  </div>
+  <ul class="tabs">
+    <li class="tab select" onclick="setType(this)">红包收益Top5</li>
+    <li class="tab" onclick="setType(this)">分享收益Top5</li>
+    <li class="tab" onclick="setType(this)">主城收益Top5</li>
+  </ul>
+  <ul class="list">
+    <li class="clearfix">
+      <img class="pai" src="../img/paihang1@3x.png" alt="">
+      <img class="avatar" src="http://thirdwx.qlogo.cn/mmopen/vi_32/Y7lkIdvKib4yiawLUIW5Wibl3DPXy7VAKwLuBdwjnicRrkLcpBVTibmO5aRQQU6GKEfzWr1Xv0WgzggicokJfohKDvUw/132" alt="">
+      <div class="name">会飞的鱼儿啊啊</div>
+      <div class="price">￥39.90</div>
+    </li>
+    <li class="clearfix">
+      <img class="pai" src="../img/paihang2@3x.png" alt="">
+      <img class="avatar" src="http://thirdwx.qlogo.cn/mmopen/vi_32/Y7lkIdvKib4yiawLUIW5Wibl3DPXy7VAKwLuBdwjnicRrkLcpBVTibmO5aRQQU6GKEfzWr1Xv0WgzggicokJfohKDvUw/132" alt="">
+      <div class="name">会飞的鱼儿啊啊</div>
+      <div class="price">￥39.90</div>
+    </li>
+    <li class="clearfix">
+      <img class="pai" src="../img/paihang3@3x.png" alt="">
+      <img class="avatar" src="http://thirdwx.qlogo.cn/mmopen/vi_32/Y7lkIdvKib4yiawLUIW5Wibl3DPXy7VAKwLuBdwjnicRrkLcpBVTibmO5aRQQU6GKEfzWr1Xv0WgzggicokJfohKDvUw/132" alt="">
+      <div class="name">会飞的鱼儿啊啊</div>
+      <div class="price">￥39.90</div>
+    </li>
+    <li class="clearfix">
+      <div class="ming">4</div>
+      <img class="avatar" src="http://thirdwx.qlogo.cn/mmopen/vi_32/Y7lkIdvKib4yiawLUIW5Wibl3DPXy7VAKwLuBdwjnicRrkLcpBVTibmO5aRQQU6GKEfzWr1Xv0WgzggicokJfohKDvUw/132" alt="">
+      <div class="name">会飞的鱼儿啊啊</div>
+      <div class="price">￥39.90</div>
+    </li>
+    <li class="clearfix">
+      <div class="ming">5</div>
+      <img class="avatar" src="http://thirdwx.qlogo.cn/mmopen/vi_32/Y7lkIdvKib4yiawLUIW5Wibl3DPXy7VAKwLuBdwjnicRrkLcpBVTibmO5aRQQU6GKEfzWr1Xv0WgzggicokJfohKDvUw/132" alt="">
+      <div class="name">会飞的鱼儿啊啊</div>
+      <div class="price">￥39.90</div>
+    </li>
+  </ul>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/md5.js">
+</script>
+<script type="text/javascript" src="../script/request.js">
+</script>
+<script type="text/javascript">
+    var list = '';
+    apiready = function(){
+       isWith(true);
+       api.addEventListener({
+           name: 'viewappear'
+       }, function(ret, err) {
+           isWith(true);
+       });
+    };
+    function isWith(isPro){
+        fnPost(
+          'https://www.hnchimay.com/hcUser/rankingdata',
+          {
+            values:{
+              uid: $api.getStorage('userInfo').id,
+            }
+          },
+          isPro,
+          function(ret,err){
+             if(ret.success){
+               var html='<div class="title">'+ret.body.user.money+'</div><div class="yu">钱包余额(元)</div><div class="fle"><div><div class="num">'+ret.body.user.receiveMoney+'</div><div class="jie">抢红包收益(元)</div></div>'+
+                 '<div class="lie"></div><div class="jin"><div class="num">'+ret.body.user.shareMoney+'</div><div class="jie">分享收益(元)</div></div>'+
+                '<div class="lie"></div><div><div class="num">'+ret.body.user.cityMoney+'</div><div class="jie">主城收益(元)</div></div></div>'+
+               '<div class="btn" onclick="goWith()">提现</div>';
+               var qian=$api.dom('.qian');
+               $api.html(qian, html);
+               list = ret.body;
+               setList(list.recordListTop5);
+             }
+          }
+        )
+    }
+    function goWith(){
+      var money = $api.text($api.dom('.title'));
+      if(Number(money)>=1){
+        api.openWin({
+            name: 'withdraw',
+            url: './withdraw/index.html',
+            pageParam:{
+              money:Number(money),
+            },
+            bounces:false,
+            reload:true,
+        });
+      }else {
+        api.toast({
+            msg: '金额需大于1元才能提现',
+            duration: 2000,
+            location: 'bottom'
+        });
+      }
+    }
+    function setType(tag){
+      if (tag == $api.dom('.tabs li.select')) return;
+      var eFootLis = $api.domAll('.tab');
+      for (var i = 0, len = eFootLis.length; i < len; i++) {
+          if (tag == eFootLis[i]) {
+              index = i;
+              if(i==0){
+                setList(list.recordListTop5)
+              }else if (i==1) {
+                setList(list.shareListTop5)
+              } else {
+                setList(list.cityListTop5)
+              }
+              $api.addCls(eFootLis[i], 'select');
+          } else {
+              $api.removeCls(eFootLis[i], 'select');
+          }
+      }
+    }
+    function setList(data){
+      var html='';
+      data.map((item,index)=>{
+        var num= index+1;
+        if(index<3){
+          html+='<li class="clearfix"><img class="pai" src="../img/paihang'+num+'@3x.png" alt="">'+
+            '<img class="avatar" src="'+item.avatarUrl+'" alt="">'+
+            '<div class="name">'+item.nickName+'</div>'+
+            '<div class="price">￥'+item.money+'</div>'+
+          '</li>';
+        }else {
+          html+='<li class="clearfix"><div class="ming">'+num+'</div>'+
+            '<img class="avatar" src="'+item.avatarUrl+'" alt="">'+
+            '<div class="name">'+item.nickName+'</div>'+
+            '<div class="price">￥'+item.money+'</div>'+
+          '</li>';
+        }
+      })
+      $api.html($api.dom('.list'), html);
+    }
+</script>
+</html>

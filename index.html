@@ -1,0 +1,380 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>底部导航</title>
+    <script type="text/javascript" src="./script/rem.js"></script>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <style>
+        header {
+            background-color: #fff;
+        }
+
+        header ul li {
+            height: 2.78rem;
+            line-height: 2.78rem;
+            text-align: center;
+            display: none;
+            color: #333;
+            position: relative;
+            font-size: .91rem;
+        }
+
+        header ul li.active {
+            display: block;
+        }
+
+        .search {
+            line-height: 1.55rem;
+            width: 13.33rem;
+            margin: .37rem auto;
+            border-radius: .75rem;
+            border: 1px solid #D5D5D5;
+            font-size: .75rem;
+            color: #C4C4C4;
+            text-align: left;
+            text-indent: 1.6rem;
+            position: relative;
+        }
+        .search img{
+          display: block;
+          width: .91rem;
+          height: .91rem;
+          top: .32rem;
+          left: .53rem;
+          position: absolute;
+        }
+
+        #footer {
+          background: #FFFFFF;
+          box-shadow: 0 -4px 6px 0 rgba(223,223,223,0.33);
+          font-size: .59rem;
+          padding-top: .32rem;
+        }
+
+        #footer ul li {
+            padding-top: 1.44rem;
+            padding-bottom: .27rem;
+            color: #ABABAB;
+            background: url() no-repeat center .11rem;
+            background-size: auto 1.12rem;
+            text-align: center;
+        }
+
+        #footer ul li.active {
+            color: #DD4848;
+        }
+
+        #footer ul li:nth-child(1) {
+            background-image: url(./img/hb1@3x.png);
+        }
+
+        #footer ul li:nth-child(2) {
+            background-image: url(./img/shc@3x.png);
+        }
+
+        #footer ul li:nth-child(3) {
+            background-image: url(./img/qb@3x.png);
+        }
+
+        #footer ul li:nth-child(4) {
+            background-image: url(./img/wo@3x.png);
+        }
+
+        #footer ul li:nth-child(1).active {
+            background-image: url(./img/hb@3x.png);
+        }
+
+        #footer ul li:nth-child(2).active {
+            background-image: url(./img/shc1@3x.png);
+        }
+
+        #footer ul li:nth-child(3).active {
+            background-image: url(./img/qb1@3x.png);
+        }
+
+        #footer ul li:nth-child(4).active {
+            background-image: url(./img/wo1@3x.png);
+        }
+
+        .flex-con {
+            overflow: auto
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap" class="flex-wrap flex-vertical">
+        <header>
+            <ul>
+                <li class="border-b active">福袋来袭</li>
+                <li class="border-b" onclick="goSearch()">
+                    <div class="search">
+                        <img src="./img/search@3x.png" alt="">
+                        寻找您爱的宝贝
+                    </div>
+                </li>
+                <li class="border-b">钱包</li>
+                <li class="border-b">个人中心</li>
+            </ul>
+        </header>
+        <div id="main" class="flex-con">
+
+        </div>
+        <div id="footer" class="border-t">
+            <ul class="flex-wrap">
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con active">抢红包</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">商城</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">钱包</li>
+                <li tapmode="hover" onclick="randomSwitchBtn( this );" class="flex-con">我的</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="script/api.js"></script>
+<script type="text/javascript">
+    var backSecond = 0;
+    apiready = function() {
+        if(!$api.getStorage('userInfo')){
+          api.openWin({
+              name: 'login',
+              url: './html/login.html',
+          });
+        } else {
+            init();
+        }
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            var curSecond = (new Date().getTime()) / 1000;
+            if (Math.abs(curSecond - backSecond) > 2) {
+                backSecond = curSecond;
+                api.toast({
+                    msg: '再按一次退出',
+                    duration: 2000,
+                    location: 'bottom'
+                });
+            } else {
+                api.closeWidget({
+                    id: 'A6087487695567', //这里改成自己的应用ID
+                    retData: {
+                        name: 'closeWidget'
+                    },
+                    silent: true
+                });
+            }
+        });
+
+
+    }
+
+    function init() {
+        $api.fixStatusBar($api.dom('header'));
+        $api.fixTabBar($api.byId('footer'));
+        api.setStatusBarStyle({
+            style: 'dark',
+            color: '#fff'
+        });
+        funIniGroup();
+    }
+
+    function funIniGroup() {
+        var eHeaderLis = $api.domAll('header li'),
+            frames = [
+              {
+                  name: 'red',
+                  url: './html/red.html',
+                  pageParam:{
+                    tou:$api.dom('header').offsetHeight,
+                    di:$api.byId('footer').offsetHeight,
+                  },
+                  bgColor: '#f4f4f4',
+                  bounces: false,
+                  scrollEnabled:false
+              },
+              {
+                  name: 'host',
+                  url: './html/host.html',
+                  pageParam:{
+                    tou:$api.dom('header').offsetHeight,
+                    di:$api.byId('footer').offsetHeight,
+                  },
+                  bgColor: '#f4f4f4',
+                  bounces: false,
+                  scrollEnabled:false
+              },
+              {
+                  name: 'qian',
+                  url: './html/qian.html',
+                  pageParam:{
+                    tou:$api.dom('header').offsetHeight,
+                    di:$api.byId('footer').offsetHeight,
+                  },
+                  bgColor: '#f4f4f4',
+                  bounces: false,
+                  scrollEnabled:false
+              },
+              {
+                  name: 'wo',
+                  url: './html/wo.html',
+                  pageParam:{
+                    tou:$api.dom('header').offsetHeight,
+                    di:$api.byId('footer').offsetHeight,
+                  },
+                  bgColor: '#f4f4f4',
+                  bounces: false,
+                  scrollEnabled:false
+              },
+            ];
+        api.openFrameGroup({
+            name: 'group',
+            scrollEnabled: false,
+            rect: {
+                x: 0,
+                y: $api.dom('header').offsetHeight,
+                w: api.winWidth,
+                h: $api.dom('#main').offsetHeight
+            },
+            index: 0,
+            frames: frames,
+            preload:3
+        }, function(ret, err) {
+
+        });
+    }
+
+    // 随意切换按钮
+    function randomSwitchBtn(tag) {
+        if (tag == $api.dom('#footer li.active')) return;
+        var eFootLis = $api.domAll('#footer li'),
+            eHeaderLis = $api.domAll('header li'),
+            index = 0;
+        for (var i = 0, len = eFootLis.length; i < len; i++) {
+            if (tag == eFootLis[i]) {
+                index = i;
+            } else {
+                $api.removeCls(eFootLis[i], 'active');
+                $api.removeCls(eHeaderLis[i], 'active');
+            }
+        }
+        $api.addCls(eFootLis[index], 'active');
+        $api.addCls(eHeaderLis[index], 'active');
+        api.setFrameGroupIndex({
+            name: 'group',
+            index: index,
+            scroll:true,
+        });
+        console.log(index);
+        if (index == 0) {
+            hiddenFrame(false)
+        } else {
+            hiddenFrame(true)
+        }
+        if(index==3 || index==2){
+          // api.setFrameAttr({
+          //     name: 'wo',
+          //     rect: {
+          //         x: 0,
+          //         y: 0,
+          //         w: api.winWidth,
+          //         h: api.winHeight-$api.dom('#footer').offsetHeight,
+          //     },
+          //     scrollEnabled:false,
+          // });
+          if(index==2){
+            api.execScript({
+                name: 'root',
+                frameName: 'qian',
+                script: 'isWith(false);'
+            });
+          }
+          if(index==3){
+            api.execScript({
+                name: 'root',
+                frameName: 'wo',
+                script: 'Login();'
+            });
+          }
+        }
+    }
+
+    function hiddenFrame(hidden) {
+        api.setFrameAttr({
+            name: 'share',
+            hidden,
+        });
+        api.setFrameAttr({
+            name: 'refresh',
+            hidden,
+        });
+        api.setFrameAttr({
+            name: 'packet',
+            hidden,
+        });
+        api.setFrameAttr({
+            name: 'castellan',
+            hidden,
+        });
+    }
+
+    function goSearch() {
+        var UISearchBar = api.require('UISearchBar');
+        UISearchBar.open({
+            placeholder: '请输入想要查询的宝贝',
+            historyCount: 10,
+            showRecordBtn: false,
+            texts: {
+                cancelText: '取消',
+                clearText: '清除搜索记录'
+            },
+            styles: {
+                navBar: {
+                    bgColor: '#F2F2F2',
+                    borderColor: '#eee'
+                },
+                searchBox: {
+                    bgImg: '',
+                    color: '#666',
+                    height: 36
+                },
+                cancel: {
+                    bg: 'rgba(0,0,0,0)',
+                    color: '#D2691E',
+                    size: 15
+                },
+                list: {
+                    color: '#696969',
+                    bgColor: '#FFFFFF',
+                    borderColor: '#eee',
+                    size: 14
+                },
+                clear: {
+                    color: '#666',
+                    borderColor: '#eee',
+                    size: 14
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                if (ret.eventType == 'search' || ret.eventType == 'history')
+                    api.openWin({
+                        name: 'search',
+                        url: './html/shop/search.html',
+                        pageParam: {
+                            name: ret.eventType.text,
+                        },
+                        bounces: false,
+                    });
+
+            } else {
+
+            }
+        });
+    }
+</script>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <script type="text/javascript" src="../../script/rem.js"></script>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+          header {
+              display: block;
+              text-align: center;
+              background-color: #f9f9f9;
+              color: #333;
+              font-size: 1rem;
+              height: 2.78rem;
+              line-height: 2.78rem;
+              position: relative;
+          }
+          body{
+            background-color: #f5f5f5;
+          }
+          .head i{
+            display:inline-block;
+            position: absolute;
+            font-size: .96rem;
+            left: .8rem;
+          }
+          .box{
+            width: 18.29rem;
+            height: 10.88rem;
+            background-color: #fff;
+            box-shadow: 0 1px .53rem 0 rgba(217,217,217,0.80);
+            border-radius: .43rem;
+            margin: 1.07rem auto;
+            box-sizing: border-box;
+            padding: 1.55rem 2.24rem 0 2.24rem;
+          }
+          .type img{
+            width: 1.39rem;
+            display: block;
+            height: 1.12rem;
+            margin-right: .43rem;
+            float: left;
+          }
+          .type span{
+            font-size: .85rem;
+            color: #333;
+            float: left;
+            line-height: 1.17rem;
+          }
+          .title{
+            font-size: .75rem;
+            line-height: 1.07rem;
+            margin-top: 1.01rem;
+            color: #999;
+          }
+          .money{
+            width: 13.76rem;
+            height: 2.13rem;border: 1px solid #E5E5E5;
+            border-radius: .21rem;
+            margin: .32rem 0 .64rem 0;
+          }
+          .money span{
+            display: inline-block;
+            font-size: 1.17rem;
+            color: #333;
+            margin: .32rem;
+          }
+          .money input{
+            font-size: 1.07rem;
+            display: inline-block;
+            overflow: hidden;
+            width: 10.67rem;
+            line-height: 1.6rem;
+            margin-top: .32rem;
+          }
+          .tip span{
+            display: inline-block;
+            font-size: .64rem;
+            line-height: .91rem;
+          }
+          .tip .left{
+            float: left;
+            color: #ABABAB;
+          }
+          .tip .left span{
+            color: #151515;
+          }
+          .tip .all{
+            float: right;
+            color: #DD4848;
+          }
+          .mytb{
+            width: 18.29rem;
+            margin: 4.8rem auto;
+            display: block;
+            line-height: 2.4rem;
+            font-size: .8rem;
+            color: #fff;
+            background: #DD4848;
+            box-shadow: 0 .16rem .27rem 0 rgba(211,56,56,0.59);
+            border-radius: .21rem;
+          }
+      </style>
+  </head>
+  <body>
+      <header class="head">
+        <i class="iconfont icon-back" onclick="goBack()"></i>
+        提现
+      </header>
+      <div class="box">
+          <div class="type clearfix">
+             <img src="../../img/weixin@3x.png" alt=""><span>微信零钱</span>
+          </div>
+          <div class="title">
+            提现金额
+          </div>
+          <div class="money">
+            <span>￥</span>
+            <input class="mymon" type="number" name="" value="">
+          </div>
+          <div class="tip clearfix">
+            <span class="left">当前钱袋余额 <span class="allmoney"></span> 元</span><span class="all" onclick="withAll()">全部提现</span>
+          </div>
+      </div>
+      <button class="mytb" onclick="goWith()">
+        提现
+      </button>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript" src="../../script/md5.js"></script>
+  <script type="text/javascript" src="../../script/request.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        $api.text($api.dom('.allmoney'), api.pageParam.money);
+
+      };
+      function withAll(){
+        $api.val($api.dom('.mymon'),api.pageParam.money);
+      }
+      function  goWith() {
+        var money = Number($api.val($api.dom('.mymon')));
+        if(money<0.3){
+          api.toast({
+              msg: '单笔提现金额不得低于0.3元',
+              duration: 2000,
+              location: 'bottom'
+          });
+        }else if(money>api.pageParam.money){
+          api.toast({
+              msg: '提现金额不得大于可用余额',
+              duration: 2000,
+              location: 'bottom'
+          });
+        } else if(money>10000){
+          api.toast({
+              msg: '单笔提现金额不得大于1元',
+              duration: 2000,
+              location: 'bottom'
+          });
+        }else {
+          fnPost(
+            'https://www.hnchimay.com/hcSendRedPacket/withdrawcash',
+            {
+              values:{
+                uid: $api.getStorage('userInfo').id,
+                money,
+              }
+            },
+            true,
+            function(ret,err){
+              if(ret.success){
+                api.showProgress({
+                    style: 'default',
+                    animationType: 'fade',
+                    title: '提现提交成功',
+                    text: '正在跳转...',
+                    modal: false
+                });
+                setTimeout(()=>{
+                  api.hideProgress();
+                  goBack();
+                },2000)
+              }
+            }
+          )
+        }
+      }
+      function goBack(){
+        api.historyBack({
+        },function(ret,err){
+            if(!ret.status){
+                api.closeWin();
+            }
+        });
+      }
+  </script>
+  </html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="divport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>title</title>
+    <script type="text/javascript" src="../../script/rem.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        body {
+            background-color: #fff;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            width: 17.12rem;
+            top: 1.8rem;
+            left: 1.44rem;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 .27rem .43rem 0 rgba(215, 215, 215, 0.45);
+            border-radius: .43rem;
+            padding-top: 1.65rem;
+        }
+
+        .tab {
+            height: 8.11rem;
+            background-image: linear-gradient(-180deg, #F17475 0%, #DD4848 100%);
+            position: relative;
+        }
+
+        .hui {
+            height: 9.01rem;
+            background-color: #f4f3f4;
+        }
+
+        header {
+            display: block;
+            text-align: center;
+            color: #fff;
+            height: 2.78rem;
+            line-height: 2.78rem;
+            position: relative;
+            ;
+            background-color: #dd4848;
+            z-index: 99;
+            width: 100%;
+        }
+
+        .head i {
+            display: inline-block;
+            position: absolute;
+            font-size: .96rem;
+            top: 1.17rem;
+            left: .8rem;
+        }
+
+        .logo {
+            width: 3.31rem;
+            height: 3.31rem;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .cont {
+            font-size: .75rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .cont .from {
+            margin: .43rem auto;
+            position: relative;
+        }
+
+        .cont .min {
+            display: inline-block;
+            background-color: #ffeae2;
+            color: #e47b4d;
+            border-radius: .4rem;
+            font-size: .59rem;
+            width: 1.55rem;
+            line-height: .8rem;
+            position: absolute;
+            left: 10.67rem;
+            top: 0;
+        }
+
+        .cont .money {
+            margin: 0 auto;
+            font-size: 1.6rem;
+            line-height: 2.24rem;
+            color: #dd4848;
+        }
+
+        .cont .dan {
+            font-size: .91rem;
+            color: #dd4848;
+        }
+
+        .bao {
+            color: #999;
+            font-size: .64rem;
+            line-height: .91rem;
+            margin-bottom: 1.12rem;
+        }
+
+        .flexbox_c {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img_container {
+            margin-bottom: 1.65rem;
+        }
+
+        .img_container .avatars {
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .img_container .avatars img {
+            width: 1.33rem;
+            height: 1.33rem;
+            border-radius: 100%;
+            margin-left: -.22rem;
+            border: 1px solid #fae3b7;
+            display: block;
+        }
+
+        .fc_y {
+            color: #fae3b7;
+        }
+
+        .fs_26 {
+            font-size: .67rem;
+        }
+
+        .fc_3 {
+            color: #333;
+        }
+
+        .fc_9 {
+            color: #999;
+        }
+
+        .mycont {
+            background-color: #fff;
+            padding: .69rem .85rem;
+        }
+
+        .mytitle {
+            font-size: .75rem;
+            line-height: 1.07rem;
+            margin-bottom: .37rem;
+            color: #333;
+        }
+
+        .myimg {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tab">
+        <div class="header">
+            <img class='logo' src="../../image/xiaomei.png" alt="" />
+            <div class="cont">
+                <p class="from">福袋来袭<span class="min">现金</span></p>
+                <div>
+                    <p class="money"><span class="dan">￥</span><span id="money">9999</span></p>
+                </div>
+                <div class="bao">
+                    已存入钱包
+                </div>
+            </div>
+            <div class='img_container flexbox_c'>
+                <div class='avatars' id="ava">
+                </div>
+                <div class='fc_y' style='margin: 0 .22rem;'>···</div>
+                <div class='content fs_26'>
+                    <text class='fc_3' id="peopCount">99</text>
+                    <text class='fc_9'>+人领取</text>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hui"></div>
+    <div class="mycont">
+        <div class="mytitle">
+
+        </div>
+        <div class="myimgs">
+
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/md5.js"></script>
+<script type="text/javascript" src="../../script/request.js"></script>
+<script type="text/javascript">
+    var isBack = false;
+    let mydata = {};
+    apiready = function() {
+        getInfo(api.pageParam.id);
+    };
+
+    function getInfo(id) {
+        fnPost(
+            'https://www.hnchimay.com/hcSendRedPacket/getRedPackageInfo', {
+                values: {
+                    redPacketId: id,
+                }
+            },
+            true,
+            function(ret, err) {
+                console.log(JSON.stringify(ret));
+                if (ret.success) {
+                    mydata = ret.body;
+                    var html = '';
+                    ret.body.peopleInfo.map((item, index) => {
+                        html += '<img src="' + item.avatarUrl + '" style="z-index:' + index + '" />'
+                    })
+                    $api.html($api.byId('ava'), html);
+                    $api.text($api.byId('peopCount'), ret.body.peopleCount);
+                    $api.text($api.byId('money'), ret.body.redPacketRecord.allMoney);
+                    $api.text($api.dom('.mytitle'), ret.body.sendRedPacket.content);
+                    $api.html($api.dom('.myimgs'), '<img onclick="goDetail()" class="myimg" src="' + ret.body.sendRedPacket.imgs + '" alt="">');
+                }
+            }
+        )
+    }
+
+    function goDetail(id) {
+        if (mydata.sendRedPacket.packageType == 3) {
+          var browser = api.require('webBrowser');
+          browser.open({
+            url: mydata.sendRedPacket.url,
+          });
+        } else if (mydata.sendRedPacket.packageType == 2) {
+            if (mydata.isluck == 1) {
+              api.closeWin({
+                  name: 'prize'
+              });
+              api.openWin({
+                  name: 'prize',
+                  url: '../shop/prize.html',
+                  pageParam: {
+                      id: mydata.sendRedPacket.commodityId,
+                  },
+                  bounces: false,
+                  reload: true,
+              });
+            } else {
+              api.closeWin({
+                  name: 'shop'
+              });
+              api.openWin({
+                  name: 'shop',
+                  url: '../shop/index.html',
+                  pageParam: {
+                      id: mydata.sendRedPacket.commodityId,
+                  },
+                  bounces: false,
+                  reload: true,
+              });
+            }
+        }
+    }
+</script>
+
+</html>

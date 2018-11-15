@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+      <style>
+      .castellan{background-color: #fff;border-top-left-radius: 40px;border-bottom-left-radius:40px;}
+      img{width: 19px;height: 19px;display: block;float: left;margin:15px 5px 14px 10px;}
+      .right{float: left;padding-top: 15px;}
+      .name{font-size: 13px;line-height: 18px;color: #333;}
+      </style>
+  </head>
+  <body>
+    <div class="castellan clearfix" onclick="goShare()">
+      <img src="../../img/share@3x.png" alt="">
+       <div class="right">
+         <div class="name">分享</div>
+       </div>
+    </div>
+  </body>
+  <script type="text/javascript" src="../../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+
+      };
+      function goShare() {
+        api.openWin({
+            name: 'Myshare',
+            url: '../share/index.html',
+        });
+
+      }
+  </script>
+  </html>
